@@ -6,8 +6,38 @@
 
 
 {% block content %}
-  <h1>Liste des opérations</h1>
+<h1>Liste des opérations</h1>
+<div class="accordion" id="accordionOperation">
   {% for x in operations %}
-    <ul>{{ x.name }}</ul>
+  <div class="accordion-item">
+      <h2 class="accordion-header">
+        <button class="accordion-button  {% if not forloop.first %}collapsed{% endif %}" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{forloop.counter}}" aria-expanded="{% if forloop.first %}true{% else %}false{% endif %}" aria-controls="collapse{{forloop.counter}}">
+          <strong style="color: {% if x.amount < 0 %}red;{% elif x.amount > 0 %}green;{% else %}blue;{% endif %}">{{x.name}} | {{x.amount}} €</strong>
+        </button>
+      </h2>
+      <div id="collapse{{forloop.counter}}" class="accordion-collapse collapse {% if forloop.first %}show{% endif %}" data-bs-parent="#accordionOperation">
+        <div class="accordion-body">
+          Nom : {{x.name}}
+          {% if x.description != None %}
+          Description : {{x.description}}
+          {% endif %}
+          Montant : {{x.amount}} €
+          {% if x.category != None %}
+          Catégorie : {{x.category}}
+          {% endif %}
+          Date : {{x.date}}
+          {% if x.refunded != None %}
+          Remboursement : {{x.refunded}}
+          {% else %}
+          Remboursement : Non remboursé
+          {% endif %}
+        </div>
+      </div>
+    </div>
   {% endfor %}
+</div>
 {% endblock %}
+
+
+    
+
