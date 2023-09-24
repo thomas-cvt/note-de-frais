@@ -1,4 +1,6 @@
 from django.db import models
+from django.contrib import admin
+from django.utils.html import format_html
 
 # Create your models here.
 
@@ -12,4 +14,14 @@ class Operation(models.Model):
 
     def __str__(self) -> str:
         date = self.date.strftime("%d/%m/%Y")
-        return f"{self.name} | {self.amount} | {date}"
+        return f"{self.name} | {self.amount} € | {date}"
+    
+    @admin.display(description="Montant")
+    def formated_amount(obj):
+        if obj.amount > 0:
+            color = "green"
+        elif obj.amount < 0:
+            color = "red"
+        else:
+            color = "blue"
+        return format_html(f'<strong><span style="color: {color};">{obj.amount} €</span></strong>')

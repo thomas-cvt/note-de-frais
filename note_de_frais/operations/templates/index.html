@@ -7,6 +7,7 @@
 
 {% block content %}
 <h1>Liste des opérations</h1>
+<div class="container">
 <div class="accordion" id="accordionOperation">
   {% for x in operations %}
   <div class="accordion-item">
@@ -36,6 +37,10 @@
     </div>
   {% endfor %}
 </div>
+</div>
+<form method="post">
+  <input type="submit" class="btn btn-primary" value="Marquer comme remboursé">
+ </form>
 {% endblock %}
 
 
