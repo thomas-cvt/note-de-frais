@@ -1,9 +1,13 @@
-<!DOCTYPE html>
-<html>
-<body>
+{% extends "master.html" %}
 
-<h1>Hello World!</h1>
-<p>Welcome to my first Django project!</p>
+{% block title %}
+  Note de Frais
+{% endblock %}
 
-</body>
-</html>
+
+{% block content %}
+  <h1>Liste des opérations</h1>
+  {% for x in operations %}
+    <ul>{{ x.name }}</ul>
+  {% endfor %}
+{% endblock %}
