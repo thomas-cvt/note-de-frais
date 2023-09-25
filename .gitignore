@@ -1,2 +1,3 @@
 env/
 __pycache__/
+note_de_frais\db.sqlite3
