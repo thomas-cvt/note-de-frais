@@ -6,17 +6,18 @@
 
 
 {% block content %}
+<div id="page">
 <h1>Liste des opérations</h1>
 <div class="container">
 <div class="accordion" id="accordionOperation">
   {% for x in operations %}
   <div class="accordion-item">
       <h2 class="accordion-header">
-        <button class="accordion-button  {% if not forloop.first %}collapsed{% endif %}" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{forloop.counter}}" aria-expanded="{% if forloop.first %}true{% else %}false{% endif %}" aria-controls="collapse{{forloop.counter}}">
-          <strong style="color: {% if x.amount < 0 %}red;{% elif x.amount > 0 %}green;{% else %}blue;{% endif %}">{{x.name}} | {{x.amount}} €</strong>
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{forloop.counter}}" aria-expanded="{% if forloop.first %}true{% else %}false{% endif %}" aria-controls="collapse{{forloop.counter}}">
+          <strong style="color: {% if x.amount < 0 %}red;{% elif x.amount > 0 %}green;{% else %}blue;{% endif %}">{% if x.refunded %}✅{% else %}❌{% endif %} {{x.name}} | {{x.amount}} €</strong>
         </button>
       </h2>
-      <div id="collapse{{forloop.counter}}" class="accordion-collapse collapse {% if forloop.first %}show{% endif %}" data-bs-parent="#accordionOperation">
+      <div id="collapse{{forloop.counter}}" class="accordion-collapse collapse" data-bs-parent="#accordionOperation">
         <div class="accordion-body">
           Nom : {{x.name}}
           {% if x.description != None %}
@@ -38,9 +39,20 @@
   {% endfor %}
 </div>
 </div>
-<form method="post">
-  <input type="submit" class="btn btn-primary" value="Marquer comme remboursé">
- </form>
+
+<form hx-post="{% url 'mark_as_refunded' %}" hx-target='#page' method="POST">
+  {% csrf_token %}
+  <button hx-post='{% url "mark_as_refunded"%}' hx-target='#page' type="submit" class="btn btn-primary">Marquer comme remboursé</button>
+</form>
+
+{% if alert %}
+<div class="alert alert-success" role="alert">
+  <strong>Toutes les opérations ont été marquées comme remboursé le {{date}}</strong>
+</div>
+{% endif %}
+
+</div>
+
 {% endblock %}
 
 
