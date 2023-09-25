@@ -8,6 +8,7 @@
 {% block content %}
 <div id="page">
 <h1>Liste des opérations</h1>
+<h4>Total non remboursé : <strong>{{total}} €</strong></h4>
 <div class="container">
 <div class="accordion" id="accordionOperation">
   {% for x in operations %}
@@ -51,7 +52,13 @@
 </div>
 {% endif %}
 
+<div class="form-check">
+  <input class="form-check-input" type="checkbox" hx-post="{% url 'change_filter' %}" hx-target='#page' hx-vals="is_enabled: true, false" name="is_enabled" {% if only_not_refunded %}checked{% endif %}>
+  <label class="form-check-label">
+    Afficher uniquement les non-remboursées
+  </label>
 </div>
+
 
 {% endblock %}
 
