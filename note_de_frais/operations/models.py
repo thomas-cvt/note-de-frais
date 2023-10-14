@@ -29,11 +29,14 @@ class Operation(models.Model):
     def formated_amount(obj):
         if obj.amount > 0:
             color = "green"
+            sign="+"
         elif obj.amount < 0:
             color = "red"
+            sign=""
         else:
             color = "blue"
-        return format_html(f'<strong><span style="color: {color};">{obj.amount} €</span></strong>')
+            sign=""
+        return format_html(f'<strong><span style="color: {color};">{sign}{obj.amount} €</span></strong>')
     
     class Meta:
         verbose_name = "Opération"

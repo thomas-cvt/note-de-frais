@@ -32,8 +32,8 @@ def mark_as_refunded(request):
     # https://www.section.io/engineering-education/how-to-build-templates-for-django-applications-with-htmx/
     Operation.objects.filter(refunded=None).update(refunded=datetime.now())
     extras = {
-        "alert": True, 
-        "date": datetime.now().strftime("%d/%m/%Y")
+        "alert": True,
+        "date_of_refund": datetime.now().strftime("%d/%m/%Y")
     }
     return home(request, extras=extras)
 

@@ -1,5 +1,6 @@
 {% extends "master.html" %}
 {% load static %}
+{% load mathfilters %}
 
 {% block title %}
 Note de Frais
@@ -47,13 +48,11 @@ Note de Frais
         </div>
     </div>
 </section>
-<section>
-    {% if alert %}
-    <div class="alert alert-success" role="alert">
-        <strong>Toutes les opérations ont été marquées comme remboursé le {{date}}</strong>
-    </div>
-    {% endif %}
+{% if alert %}
+<section style="margin-top: 15px;margin-left: 20px;margin-right: 20px;">
+    <div class="alert alert-success alert-dismissible" role="alert"><button class="btn-close" type="button" aria-label="Close" data-bs-dismiss="alert"></button><span><strong>Le remboursement a bien été effectué à la date du {{date_of_refund}}.&nbsp;</strong></span></div>
 </section>
+{% endif %}
 <section>
     <div class="container-fluid" style="margin-top: 20px;padding-left: 35px;padding-right: 35px;">
         <div class="row" style="margin-top: 1px;">
@@ -63,7 +62,7 @@ Note de Frais
                 </h1>
                 <h1
                     style="margin-bottom: 20px;font-size: 35px; color: {% if total < 0 %}red;{% elif total > 0 %}green;{% else %}blue;{% endif %}">
-                    {{total}} €</h1>
+                    {% if total > 0 %}+{% endif %}{{total}} €</h1>
                 <div class="text-center d-flex d-md-flex justify-content-center align-items-center justify-content-md-center align-items-md-center"
                     style="width: 100%;margin-top: 20px;margin-bottom: 20px;">
                     <div class="text-center" style="width: 40%;border-top: 1px solid var(--bs-body-color);"></div>
@@ -75,7 +74,7 @@ Note de Frais
                 <div class="text-center d-flex d-md-flex justify-content-center align-items-center justify-content-md-center align-items-md-center"
                     style="width: 100%;margin-top: 20px;margin-bottom: 20px;">
                     <div class="text-center" style="width: 40%;border-top: 1px solid var(--bs-body-color);"></div>
-                </div><button class="btn btn-primary shadow" type="button"
+                </div><button class="btn btn-primary shadow{% if total == 0%} disabled{% endif %}" type="button"
                     title="Toutes les dépenses actuellement non-remboursées seront marquées comme remboursées"
                     style="border-radius: 50px;margin-top: 7px;" data-bs-target="#modal-1"
                     data-bs-toggle="modal">Effectuer un remboursement</button>
@@ -92,25 +91,25 @@ Note de Frais
                                 aria-expanded="{% if forloop.first %}true{% else %}false{% endif %}"
                                 aria-controls="collapse{{forloop.counter}}">
                                 <strong
-                                    style="color: {% if x.amount < 0 %}red;{% elif x.amount > 0 %}green;{% else %}blue;{% endif %}">{%if x.refunded %}✅{% else %}❌{% endif %} {{x.name}} | {{x.amount}} €</strong>
+                                    >{%if x.refunded %}✅{% else %}❌{% endif %} {{x.name}} | <span style="color: {% if x.amount < 0 %}red;{% elif x.amount > 0 %}green;{% else %}blue;{% endif %}">{% if x.amount > 0 %}+{% endif %}{{x.amount}} €</span></strong>
                             </button>
                         </h2>
                         <div id="collapse{{forloop.counter}}" class="accordion-collapse collapse"
                             data-bs-parent="#accordion-1">
                             <div class="accordion-body">
-                                Nom : {{x.name}}
-                                {% if x.description != None %}
-                                Description : {{x.description}}
+                                <strong>Nom :</strong> {{x.name}}<br>
+                                {% if x.description != None %} 
+                                <strong>Description :</strong> {{x.description}}<br>
                                 {% endif %}
-                                Montant : {{x.amount}} €
+                                <strong>Montant :</strong> {% if x.amount > 0 %}+{% endif %}{{x.amount}} €<br>
                                 {% if x.category %}
-                                Catégorie : {{ x.category.name }}
+                                <strong>Catégorie :</strong> {{ x.category.name }}<br>
                                 {% endif %}
-                                Date : {{x.date}}
+                                <strong>Date :</strong> {{x.date}}<br>
                                 {% if x.refunded != None %}
-                                Remboursement : {{x.refunded}}
+                                <strong>Remboursement :</strong> {{x.refunded}}
                                 {% else %}
-                                Remboursement : Non remboursé
+                                <strong>Remboursement :</strong> Non remboursé
                                 {% endif %}
                             </div>
                         </div>
@@ -125,15 +124,24 @@ Note de Frais
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">Effectuer un remboursement</h4><button class="btn-close" type="button"
-                    aria-label="Close" data-bs-dismiss="modal"></button>
+                <h4 class="modal-title">Effectuer un remboursement</h4><button class="btn-close" type="button" aria-label="Close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
                 <p>Êtes-vous sûr de vouloir marquer toutes les dépenses comme remboursées ?</p>
+                {% if total < 0 %}
+                <h1 class="text-center" style="font-size: 20px;">Montant total remboursé : {{total|abs}} €</h1>
+                <h1 class="text-center" style="font-size: 20px;">Date d'exécution : {% now "d/m/Y" %}</h1>
+                {% else %}
+                <h1 class="text-center" style="font-size: 18px;">Le solde total actuel indique que vous êtes en positif et que vous n'avez rien à rembourser. Êtes-vous sûr de vouloir valider un remboursement, ce qui remettra le solde à 0 € ?</h1>
+                {% endif %}
             </div>
-            <div class="modal-footer"><button class="btn btn-light" type="button"
-                    data-bs-dismiss="modal">Annuler</button><button class="btn btn-primary" type="button">Valider le
-                    remboursement</button></div>
+            <div class="modal-footer">
+                <button class="btn btn-light" type="button" data-bs-dismiss="modal">Annuler</button>
+                <form hx-post="{% url 'mark_as_refunded' %}" hx-target="body" method="POST">
+                    {% csrf_token %}
+                    <button hx-post='{% url "mark_as_refunded"%}' hx-target="body" type="submit" class="btn btn-primary">Marquer comme remboursé</button>
+                </form>
+            </div>
         </div>
     </div>
 </div>
