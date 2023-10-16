@@ -67,10 +67,14 @@ Note de Frais
                     style="width: 100%;margin-top: 20px;margin-bottom: 20px;">
                     <div class="text-center" style="width: 40%;border-top: 1px solid var(--bs-body-color);"></div>
                 </div>
-                <div class="form-check text-start d-md-flex justify-content-md-center align-items-md-center"><input
-                        class="form-check-input" type="checkbox" id="formCheck-1" checked="" name="only_refunded"><label
-                        class="form-check-label" for="formCheck-1" style="margin-left: 6px;">Afficher uniquement les
-                        dépenses non-remboursées</label></div>
+                <div class="form-check text-start d-md-flex justify-content-md-center align-items-md-center">
+                    <form hx-post="{% url 'change_filter' %}" hx-target="#accordion-div" method="POST">
+                    {% csrf_token %}
+                    <input
+                    hx-post='{% url "change_filter"%}' hx-target="#accordion-div" class="form-check-input" type="checkbox" id="formCheck-1" checked="" name="only_refunded">
+                        <label class="form-check-label" for="formCheck-1" style="margin-left: 6px;">Afficher uniquement les dépenses non-remboursées</label>
+                        </form>
+                </div>
                 <div class="text-center d-flex d-md-flex justify-content-center align-items-center justify-content-md-center align-items-md-center"
                     style="width: 100%;margin-top: 20px;margin-bottom: 20px;">
                     <div class="text-center" style="width: 40%;border-top: 1px solid var(--bs-body-color);"></div>
@@ -82,40 +86,10 @@ Note de Frais
             <div class="col-md-8" style="margin-top: 10px;margin-bottom: 10px;">
                 <h1 class="fw-normal" style="font-size: 25px;text-align: left;margin-bottom: 15px;">Liste des opérations
                     :</h1>
-                <div class="accordion" role="tablist" id="accordion-1">
-                    {% for x in operations %}
-                    <div class="accordion-item">
-                        <h2 class="accordion-header">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapse{{forloop.counter}}"
-                                aria-expanded="{% if forloop.first %}true{% else %}false{% endif %}"
-                                aria-controls="collapse{{forloop.counter}}">
-                                <strong
-                                    >{%if x.refunded %}✅{% else %}❌{% endif %} {{x.name}} | <span style="color: {% if x.amount < 0 %}red;{% elif x.amount > 0 %}green;{% else %}blue;{% endif %}">{% if x.amount > 0 %}+{% endif %}{{x.amount}} €</span></strong>
-                            </button>
-                        </h2>
-                        <div id="collapse{{forloop.counter}}" class="accordion-collapse collapse"
-                            data-bs-parent="#accordion-1">
-                            <div class="accordion-body">
-                                <strong>Nom :</strong> {{x.name}}<br>
-                                {% if x.description != None %} 
-                                <strong>Description :</strong> {{x.description}}<br>
-                                {% endif %}
-                                <strong>Montant :</strong> {% if x.amount > 0 %}+{% endif %}{{x.amount}} €<br>
-                                {% if x.category %}
-                                <strong>Catégorie :</strong> {{ x.category.name }}<br>
-                                {% endif %}
-                                <strong>Date :</strong> {{x.date}}<br>
-                                {% if x.refunded != None %}
-                                <strong>Remboursement :</strong> {{x.refunded}}
-                                {% else %}
-                                <strong>Remboursement :</strong> Non remboursé
-                                {% endif %}
-                            </div>
-                        </div>
+                    <div id="accordion-div">
+                        {% include "accordion.html" %}
                     </div>
-                    {% endfor %}
-                </div>
+                
             </div>
         </div>
     </div>

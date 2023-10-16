@@ -7,20 +7,13 @@ from .functions import total
 
 # Create your views here.
 
-only_not_refunded = True
-
 def home(request, extras={}):
-    global only_not_refunded
-    if only_not_refunded:
-        operations = Operation.objects.filter(refunded=None).order_by("-date")
-    else:
-        operations = Operation.objects.order_by("-date")
+    operations = Operation.objects.filter(refunded=None).order_by("-date")
     categories = Category.objects.all()
     template = loader.get_template("index.html")
     context = {
         "operations": operations,
         "categories": categories,
-        "only_not_refunded": only_not_refunded,
         "total": total()
     }
     for param in extras.keys():
@@ -38,9 +31,17 @@ def mark_as_refunded(request):
     return home(request, extras=extras)
 
 def change_filter(request):
-    global only_not_refunded
-    only_not_refunded = not only_not_refunded
-    return home(request)
+    template = loader.get_template("accordion.html")
+    categories = Category.objects.all()
+    context = {
+        "categories": categories,
+        "total": total()
+    }
+    if request.POST.get("only_refunded"):
+        context["operations"] = Operation.objects.filter(refunded=None).order_by("-date")
+    else:
+        context["operations"] = Operation.objects.order_by("-date")
+    return HttpResponse(template.render(context, request))
 
 def select_categories(request):
     Operation.objects.all()
