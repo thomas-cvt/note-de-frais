@@ -1,4 +1,5 @@
 {% extends "master.html" %}
+{% load static %}
 
 {% block title %}
   Page introuvable
@@ -6,5 +7,7 @@
 
 
 {% block content %}
-  <h1>Cette page n'a pas été trouvée</h1>
+<section class="text-center" style="margin-top: 25px;"><img src="{% static 'img/gear.webp' %}" style="width: 20%;">
+  <h1 style="margin-top: 20px;">Cette page n'existe pas</h1>
+</section>
 {% endblock %}

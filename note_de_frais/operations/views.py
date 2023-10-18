@@ -47,4 +47,3 @@ def select_categories(request):
     Operation.objects.all()
     print(request.POST.getlist("categories")) # On sait qui est coché mais pas qui ne l'est pas
     return home(request)
-""""""
