@@ -1,7 +1,7 @@
 {% load cache %}
-{% cache 600 accordion operations %}
 <div class="accordion" role="tablist" id="accordion-1">
     {% for x in operations %}
+    {% cache None accordion x %}
     <div class="accordion-item">
         <h2 class="accordion-header">
             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
@@ -32,6 +32,6 @@
             </div>
         </div>
     </div>
+    {% endcache %}
     {% endfor %}
 </div>
-{% endcache %}
