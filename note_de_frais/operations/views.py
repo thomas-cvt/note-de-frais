@@ -5,7 +5,9 @@ from .models import Operation, Category
 from datetime import datetime
 from .functions import total
 
+
 # Create your views here.
+
 
 def home(request, extras={}):
     operations = Operation.objects.filter(refunded=None).order_by("-date")
@@ -14,12 +16,13 @@ def home(request, extras={}):
     context = {
         "operations": operations,
         "categories": categories,
-        "total": total()
+        "total": total(),
     }
     for param in extras.keys():
         context[param] = extras[param]
 
     return HttpResponse(template.render(context, request))
+
 
 def mark_as_refunded(request):
     # https://www.section.io/engineering-education/how-to-build-templates-for-django-applications-with-htmx/
@@ -29,6 +32,7 @@ def mark_as_refunded(request):
         "date_of_refund": datetime.now().strftime("%d/%m/%Y")
     }
     return home(request, extras=extras)
+
 
 def change_filter(request):
     template = loader.get_template("accordion.html")
@@ -42,6 +46,7 @@ def change_filter(request):
     else:
         context["operations"] = Operation.objects.order_by("-date")
     return HttpResponse(template.render(context, request))
+
 
 def select_categories(request):
     Operation.objects.all()
