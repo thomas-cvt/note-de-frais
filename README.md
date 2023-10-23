@@ -36,7 +36,7 @@ pip install -r requirements.txt
 Ajouter les variables d'environnements nécessaires :
 
 ```sh
-cd ./env
+cd ./note_de_frais
 touch .env
 ```
 Puis ajouter l'extrait ci-dessous en complétant les variables :
