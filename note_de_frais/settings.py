@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 import environ
 import os
+import pymysql
+pymysql.install_as_MySQLdb()
 
 # Initialise environment variables
 env = environ.Env()
@@ -129,6 +131,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = 'static/'
+# STATIC_ROOT = ''
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
@@ -143,3 +146,4 @@ CACHES = {
 }
 
 LOGIN_REDIRECT_URL = '/'
+LOGIN_URL = '/accounts/login/'
