@@ -29,12 +29,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get("SECRET_KEY")
+SECRET_KEY = os.environ.get("SECRET_KEY") if 'SECRET_KEY' in os.environ else 'django-insecure-$=Svo7*zdWhuPM#xRC7txHht&5YmXVPThDrFBnuS6L4BktciwX'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = os.environ.get("DEBUG") if 'DEBUG' in os.environ else False
 
-ALLOWED_HOSTS = os.environ.get('SERVERNAMES').split(' ') # To change for production !
+ALLOWED_HOSTS = os.environ.get('SERVERNAMES').split(' ') if 'SERVERNAMES' in os.environ else  ["*"] # To change for production !
 
 
 # Application definition
@@ -90,8 +90,8 @@ DATABASES = {
         'NAME': os.environ.get("DB_NAME"),
         'USER': os.environ.get("DB_USER"),
         'PASSWORD': os.environ.get("DB_PASSWORD"),
-        'HOST': os.environ.get("DB_HOST"),
-        'PORT': os.environ.get("DB_PORT"),
+        'HOST': os.environ.get("DB_HOST") if 'DB_HOST' in os.environ else 'localhost',
+        'PORT': os.environ.get("DB_PORT") if 'DB_PORT' in os.environ else '3306',
     }
 }
 
@@ -130,8 +130,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
-# STATIC_ROOT = ''
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

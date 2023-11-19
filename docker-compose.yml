@@ -1,0 +1,42 @@
+version: '3'
+services:
+  db:
+    image: mysql
+    volumes:
+      - db_data:/var/lib/mysql
+    restart: always
+    ports:
+      - 3306
+    environment:
+      MYSQL_DATABASE: note-de-frais-db
+      MYSQL_USER: note-de-frais-user
+      MYSQL_PASSWORD: note-de-frais-password
+      MYSQL_ROOT_PASSWORD: note-de-frais-root-password
+    networks:
+      - mynetwork
+  note-de-frais:
+    build: .
+    command: sh -c "python3 manage.py migrate && python3 manage.py collectstatic --noinput && gunicorn note_de_frais.wsgi -b 0.0.0.0:8000 --log-file -"
+    depends_on:
+      - db
+    ports:
+      - 8000:8000
+    restart: always
+    environment:
+      DB_NAME: note-de-frais-db
+      DB_USER: note-de-frais-user
+      DB_PASSWORD: note-de-frais-password
+      DB_HOST: db
+      DB_PORT: 3306
+      DEBUG: True
+      SERVERNAMES: "*"
+    networks:
+      - mynetwork
+    volumes:
+      - static_volume:/app/static
+networks:
+  mynetwork: {}
+volumes:
+  db_data: {}
+  static_volume: {}
+
