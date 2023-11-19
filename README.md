@@ -1,3 +1,7 @@
+![Alt text](imgs/image.png)
+
+___
+
 # Note de Frais
 
 **Application Web de gestion de dépenses et de remboursements.**
