@@ -1,6 +1,10 @@
 from django.db import models
 from django.contrib import admin
 from django.utils.html import format_html
+from django.db.models.signals import post_delete, post_save
+from django.dispatch import receiver
+
+from datetime import datetime
 
 # Create your models here.
 class Category(models.Model):
@@ -14,6 +18,7 @@ class Category(models.Model):
         verbose_name_plural = "Catégories"
 
 class Operation(models.Model):
+    update_date = None
     name = models.CharField(max_length=200, verbose_name="Nom")
     description = models.CharField(max_length=500, null=True, blank=True, verbose_name="Description")
     amount = models.DecimalField(decimal_places=2, max_digits=10, verbose_name="Montant")
@@ -41,4 +46,7 @@ class Operation(models.Model):
     class Meta:
         verbose_name = "Opération"
         verbose_name_plural = "Opérations"
-    
+
+@receiver([post_save, post_delete], sender=Operation)
+def change_update_date(sender, **kwargs):
+    Operation.update_date = datetime.now()

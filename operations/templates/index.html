@@ -43,6 +43,9 @@ Note de Frais
                     title="Toutes les dépenses actuellement non-remboursées seront marquées comme remboursées"
                     style="border-radius: 50px;margin-top: 7px;" data-bs-target="#modal-1"
                     data-bs-toggle="modal">Effectuer un remboursement</button>
+                    {% if update_date %}
+                    <h1 style="font-size: 17px;margin-top: 25px;">Dernière modification : {{update_date}}</h1>
+                    {% endif %}
             </div>
             <div class="col-md-8" style="margin-top: 10px;margin-bottom: 10px;">
                 <h1 class="fw-normal" style="font-size: 25px;text-align: left;margin-bottom: 15px;">Liste des opérations

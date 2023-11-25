@@ -17,6 +17,7 @@ def home(request, extras={}):
         "operations": operations,
         "categories": categories,
         "total": total(),
+        "update_date": Operation.update_date
     }
     for param in extras.keys():
         context[param] = extras[param]
